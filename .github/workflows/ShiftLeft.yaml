@@ -7,9 +7,10 @@ jobs:
   scanning:
     env:
       APP_ID: 792dc46410be1bfc9c8332ba7efec74559851448dfba1ee2bcdcc019208044b0
-      REQ_URL_MAP: "${{toJSON('{\"SL_RESULT_API_HOST\":\"https://slresultapi.dev.securin.io/resultapi/v1\"\
+      REQ_URL_MAP: "${{toJSON('{\"SL_API_HOST\":\"https://slapi.dev.securin.io/shiftleftapi\"\
         ,\"SL_RESULTPARSER_API_HOST\":\"https://slresultparserapi.dev.securin.io/resultparserapi/v1\"\
-        ,\"SL_API_HOST\":\"https://slapi.dev.securin.io/shiftleftapi\"}')}}"
+        ,\"SL_RESULT_API_HOST\":\"https://slresultapi.dev.securin.io/resultapi/v1\"\
+        }')}}"
     steps:
     - name: Retrieve Scan Info
       id: auth_token
