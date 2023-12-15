@@ -11,18 +11,18 @@ on:
 jobs:
   scanning:
     env:
-      APP_ID: 9981d62db1d7bd867f4e11595ddf45043a368fa21936e1b9af16803cd906f374
+      APP_ID: 8832d455b30cd4dc55818bcb610bd4ba23dfc588ee5d3e32c821e5d1d7f205cc
       BRANCH_NAME: master
-      SCAN_ID: 2c823b55997379b41aec408ac205d53592c89f1224a82c8e470458681881a51a
-      REQ_URL_MAP: "${{toJSON('{\"SL_RESULT_API_HOST\":\"https://slresultapi.qa.securin.io/resultapi\"\
-        ,\"SL_RESULTPARSER_API_HOST\":\"https://slresultparserapi.qa.securin.io/resultparserapi\"\
+      SCAN_ID: 9ede53cccc91bc251a786c2b79d187e1a33ec2a034f3daa8b593f1e1be1ef8ee
+      REQ_URL_MAP: "${{toJSON('{\"SL_RESULT_API_HOST\":\"https://slresultapi.securin.io/resultapi\"\
+        ,\"SL_RESULTPARSER_API_HOST\":\"https://slresultparserapi.securin.io/resultparserapi\"\
         }')}}"
     steps:
     - name: Retrieve Token Info
       id: auth_token
-      run: "respJson=$(curl --location --request GET 'https://slresultapi.qa.securin.io/resultapi/aws/ecr/token'\
-        \  --header 'Authorization: Bearer ${{secrets.CLI_ACCESS_TOKEN}}'  --data-raw\
-        \ ' ' ) \necho \"authTokenJson=$respJson\" >> $GITHUB_OUTPUT"
+      run: "respJson=$(curl --location --request GET 'https://slresultapi.securin.io/resultapi/aws/ecr/token'\
+        \  --header 'X-ASPM-Auth-Key: ${{secrets.ORG_API_KEY}}'  --data-raw ' ' )\
+        \ \necho \"authTokenJson=$respJson\" >> $GITHUB_OUTPUT"
     - uses: actions/checkout@v3
     - name: Scan Initiated
       id: sec_scan_init
@@ -37,7 +37,7 @@ jobs:
         \ ) \ndocker login --username  $usrVal --password $usrPassword $usrPrxyUrl\
         \ \ndocker pull -q $usrImgTag \ndocker run -v ${{github.workspace}}:/src \
         \ --volume ${{github.workspace}}:/workdir -v /var/run/docker.sock:/var/run/docker.sock\
-        \ $usrImgTag -access_tkn ${{secrets.CLI_ACCESS_TOKEN}} -app_id ${{ env.APP_ID\
+        \ $usrImgTag -org_api_key ${{secrets.ORG_API_KEY}} -app_id ${{ env.APP_ID\
         \ }} -scan_id ${{ env.SCAN_ID }} -branch_name ${{ env.BRANCH_NAME }} -req_url_map\
         \ ${{ env.REQ_URL_MAP }} -tool_name github event:${{ github.event_name }}\
         \  pr_number:${{ github.event.number }} -upload_log true"
